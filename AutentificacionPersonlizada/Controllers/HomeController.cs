@@ -11,18 +11,18 @@ namespace AutentificacionPersonlizada.Controllers
     public class HomeController : Controller
     {
         // GET: Home
+       [Authorize]
         public ActionResult Index()
         {
-            var clave = ConfigurationManager.AppSettings["ClaveCifrado"];
+            //Esta es una prueba antes de ìmplentar las clases en la carpeta Seguridad
 
-            var cifrado = SeguridadUtilidades.Cifrar("Hola don pepito", clave);
+            //var clave = ConfigurationManager.AppSettings["ClaveCifrado"];
 
-            var data = Convert.FromBase64String(cifrado);
+            //var cifrado = SeguridadUtilidades.Cifrar("joseantonio.perez-ruibal@tajamar365.es", clave);
 
-            var descifrado = SeguridadUtilidades.Descifrar(data, clave);
+            //var data = Convert.FromBase64String(cifrado);
 
-            
-           
+            //var descifrado = SeguridadUtilidades.Descifrar(data, clave);
 
             return View();
         }

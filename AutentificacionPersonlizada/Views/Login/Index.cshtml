@@ -1,0 +1,19 @@
+﻿@model AutentificacionPersonlizada.Models.Usuario
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(o=>o.login)
+    @Html.TextAreaFor(o=>o.login)
+    @Html.ValidationMessageFor(o=>o.login)
+    <br/>
+    @Html.LabelFor(o => o.password)
+    @Html.TextAreaFor(o => o.password)
+    @Html.ValidationMessageFor(o => o.password)
+    <br/>
+    <input type="submit" value="Enviar"/>
+}
+

@@ -38,38 +38,38 @@ namespace AutentificacionPersonlizada.Utilidades
 
 
 
-        public static String Cifrar(String contenido, String clave)
-        {
-            //para codificar el texto que quiero cifrar
-            var encoding = new UTF8Encoding();
-            var cripto=new RijndaelManaged();
+            public static string Cifrar(String contenido, String clave)
+            {
+                //para codificar el texto que quiero cifrar
+                var encoding = new UTF8Encoding();
+                var cripto=new RijndaelManaged();
 
-            byte[] cifrado;
-            byte[] retorno;
-            //clave generada en bytes
-            byte[] key = encoding.GetBytes(clave);
+                byte[] cifrado;
+                byte[] retorno;
+                //clave generada en bytes
+                byte[] key = GetKey(clave);
             
-            //asigno la clave y ek IV
-            cripto.Key = key;
-            cripto.GenerateIV();
-
-            byte[] aEncriptar = encoding.GetBytes(contenido);
-            //Creo un encriptador CreateEncryptor() el array aEncriptar desde posicion 0
-            cifrado = cripto.CreateEncryptor().TransformFinalBlock(aEncriptar, 0, aEncriptar.Length);
-            //el array retorno sera = la suma del vector mas longitud del cifrado
-            retorno = new byte[cripto.IV.Length + cifrado.Length];
+                //asigno la clave y ek IV
+                cripto.Key = key;
+                cripto.GenerateIV();
+                byte[] aEncriptar = encoding.GetBytes(contenido);
             
-            //copias IV desde la posicion 0
-            cripto.IV.CopyTo(retorno,0);
+                //Creo un encriptador CreateEncryptor() el array aEncriptar desde posicion 0
+                cifrado = cripto.CreateEncryptor().TransformFinalBlock(aEncriptar, 0, aEncriptar.Length);
+                //el array retorno sera = la suma del vector mas longitud del cifrado
+                retorno = new byte[cripto.IV.Length + cifrado.Length];
+            
+                //copias IV desde la posicion 0
+                cripto.IV.CopyTo(retorno,0);
 
-            cifrado.CopyTo(retorno,cripto.IV.Length);
-            //convierto la cadena en base 64, por ejemplo una imagen, word, etc
-            //contiene todo el flujo de datos
+                cifrado.CopyTo(retorno,cripto.IV.Length);
+                //convierto la cadena en base 64, por ejemplo una imagen, word, etc
+                //contienetodo el flujo de datos
 
-            return Convert.ToBase64String(retorno);
+                return Convert.ToBase64String(retorno);
         }
 
-        public static String Descifrar(String contenido, String clave)
+        public static String Descifrar(byte [] contenido,String clave)
         {
             //
             UTF8Encoding encoding=new UTF8Encoding();
@@ -78,17 +78,18 @@ namespace AutentificacionPersonlizada.Utilidades
             //Este vecto es temporal
             var ivTemp = new byte[cripto.IV.Length];
             //es el crifrado y viene de un texto UTF8
-            var datos = encoding.GetBytes(contenido);
             
-            var key = encoding.GetBytes(clave);
+            //var datos = encoding.GetBytes(contenido);
+            
+            var key = GetKey(clave);
 
-            var cifrado =new byte[datos.Length - ivTemp.Length];
+            var cifrado = new byte[contenido.Length - ivTemp.Length];
 
             cripto.Key = key;
             //coge un trozo de un array y lo copia en otro array
-            Array.Copy(datos,ivTemp,ivTemp.Length);
+            Array.Copy(contenido,ivTemp,ivTemp.Length);
             //aqui le digo el origen posicion origin , posicion destino, destino
-            Array.Copy(datos,ivTemp.Length,cifrado,0,cifrado.Length);
+            Array.Copy(contenido,ivTemp.Length,cifrado,0,cifrado.Length);
 
             cripto.IV = ivTemp;
             //aqui dispongo del array descifrado.
